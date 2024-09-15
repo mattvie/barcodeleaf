@@ -1,0 +1,8 @@
+
+{
+"PK": "flag",
+"SK": "flag name",
+"desc": "description",
+"color": "#163912",
+"icon": "binary string"
+}

@@ -1,0 +1,71 @@
+.camera__enable {
+    margin: 0 auto;
+}
+
+.button__styling {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cameraHandler__message {
+    padding: 20px;
+    text-align: center;
+    font-size: 30px;
+    line-height: 1.2;
+    background-color: #006400;
+    color: #52E752;
+}
+
+.cameraHandler__messageIcon {
+    font-size: 40px;
+    padding-top: 15px;
+}
+
+.cameraHandler__unsopported {
+    display: flex;
+    height: 250px;
+    align-items: center;
+    text-align: center;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10%;
+    height: 100vh;
+
+    background-color: #E6E6E6;
+}
+
+.img_logo {
+    width: 30%;
+
+    transform: scale(1);
+    animation: pulse 2s infinite;
+}
+
+.title {
+    width: 50%
+}
+
+.bcode {
+    margin-top: 30%;
+    vertical-align: bottom;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+    }
+
+    70% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0.95);
+    }
+}

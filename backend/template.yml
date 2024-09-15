@@ -1,0 +1,192 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  projetao
+  Sample SAM Template for projetao
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 2000
+    Handler: app.lambda_handler
+    Runtime: python3.12
+    Architectures:
+      - arm64
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+  Api:
+    TracingEnabled: true
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: hello_world
+      CodeUri: functions/hello_world
+      Role: !GetAtt MyLambdaExecutionRole.Arn
+      Layers: 
+        - !Ref requests
+      Events:
+        hello:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AdminProdStage
+            Path: /hello
+            Method: post
+
+  GetProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get_product
+      CodeUri: functions/get_product
+      Role: !GetAtt MyLambdaExecutionRole.Arn
+      Layers: 
+        - !Ref openfoodfacts
+      Events:
+        product:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AdminProdStage
+            Path: /product/{barcode}
+            Method: post
+
+  SearchProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: search
+      CodeUri: functions/search
+      Timeout: 180
+      Role: !GetAtt MyLambdaExecutionRole.Arn
+      Layers: 
+        - !Ref fuzzy
+      Events:
+        search:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AdminProdStage
+            Path: /search
+            Method: post
+
+  requests:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: requests
+      Description: Requests library
+      ContentUri: layers/requests
+
+  openfoodfacts:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: openfoodfacts
+      Description: Open Food Facts library
+      ContentUri: layers/openfoodfacts
+  
+  fuzzy:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: fuzzy
+      Description: FuzzyWuzzy library
+      ContentUri: layers/fuzzy
+
+  AdminProdStage:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Admin
+      StageName: prod
+      Mode: merge
+      OpenApiVersion: "3.0.1"
+      EndpointConfiguration:
+        Type: REGIONAL
+      DefinitionUri: admin_prod.yaml
+      MethodSettings:
+        - DataTraceEnabled: true
+          HttpMethod: "*"
+          LoggingLevel: INFO
+          ResourcePath: "/*"
+          MetricsEnabled: true
+      AccessLogSetting:
+        DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'  
+    DependsOn: ApiGatewayAccount
+
+  ApiGatewayLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${AdminProdStage}
+      
+  # ApplicationResourceGroup:
+  #   Type: AWS::ResourceGroups::Group
+  #   Properties:
+  #     Name: !Sub ApplicationInsights-SAM-${AWS::StackName}
+  #     ResourceQuery:
+  #       Type: CLOUDFORMATION_STACK_1_0
+
+  # ApplicationInsightsMonitoring:
+  #   Type: AWS::ApplicationInsights::Application
+  #   Properties:
+  #     ResourceGroupName: !Ref ApplicationResourceGroup
+  #     AutoConfigurationEnabled: true
+
+  ApiGatewayAccount:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
+    DependsOn: ApiGatewayCloudWatchRole
+
+  ApiGatewayCloudWatchRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+  MyLambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole
+      Policies: 
+        - PolicyName: "root"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Action: 
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

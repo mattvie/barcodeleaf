@@ -1,0 +1,348 @@
+.compare-products-search {
+    padding: 20px;
+    margin-bottom: 15vh;
+    font-family: "Montserrat", sans-serif;
+}
+
+.products-list-search,
+.compare-items-search {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    margin-top: 13vh; /* Diminuí a margem superior para colocar a barra mais para cima */
+    font-family: "Montserrat", sans-serif;
+}
+
+
+.search-bar input {
+    width: 70%;
+    max-width: 500px;
+    padding: 12px 20px;
+    border: 2px solid #cfe5cf;
+    border-radius: 25px;
+    font-size: 16px;
+    box-shadow: 0 4px 6px #eefaee;
+    transition: all 0.3s ease-in-out;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
+}
+
+.search-bar input:focus {
+    border-color: #006400;
+    box-shadow: 0 4px 8px #cfe5cf;
+    font-family: "Montserrat", sans-serif;
+}
+
+.search-button {
+    margin-left: 10px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    background-color: #006400;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px #cfe5cf;
+    transition: background-color 0.3s ease;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-item-search {
+    flex: 1 1 calc(50% - 20px);
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-item-search:hover {
+    background-color: #e6f7ff;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-item-search img {
+    width: 100px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Seção de comparação de produtos */
+.compare-section-search {
+    margin-top: 20px;
+    margin-bottom: 20%;
+    font-family: "Montserrat", sans-serif;
+}
+
+.compare-item-search {
+    position: relative; /* Necessário para que o botão de remoção seja posicionado corretamente */
+    display: flex;
+    flex-direction: column; /* Alinha os elementos em coluna para mobile */
+    align-items: center;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f4f4f4;
+    margin-bottom: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+}
+
+.compare-item-search:hover {
+    background-color: #e1f5e1;
+    transform: translateY(-5px);
+}
+
+/* Contêiner da imagem */
+.compare-img-container-search {
+    width: 100%; /* Largura total da imagem em telas menores */
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px; /* Espaço entre a imagem e o texto */
+}
+
+.compare-img-container-search img {
+    width: 60%; /* Ajusta o tamanho da imagem para ocupar uma porção maior da tela */
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Detalhes do produto */
+.compare-details-search {
+    width: 100%;
+    text-align: center; /* Centraliza o texto */
+    font-family: "Montserrat", sans-serif;
+}
+
+.compare-details-search span {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.compare-details-search p {
+    font-size: 1em;
+    color: #666;
+}
+
+.remove-button-search {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgb(210, 3, 3);
+    border-radius: 50%;
+    color: white;
+    justify-content: top;
+    cursor: pointer;
+    z-index: 10;
+}
+
+
+/* Ajustes de responsividade */
+@media (min-width: 600px) {
+    .compare-item-search {
+        flex-direction: row; /* Retorna ao layout em linha para telas maiores */
+        align-items: center;
+    }
+
+    .compare-img-container-search {
+        width: 20%; /* Tamanho da imagem ajustado para telas maiores */
+        margin-right: 20px; /* Espaço entre a imagem e o texto */
+    }
+
+    .compare-details-search {
+        text-align: left; /* Alinha o texto à esquerda em telas maiores */
+    }
+}
+
+
+.product-details-search {
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+}
+
+.dot-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 15px;
+    max-width: 300px;
+    transition: transform 0.2s ease-in-out;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-image {
+    max-width: 50%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.product-info {
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    font-family: "Montserrat", sans-serif;
+}
+
+.product-details p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 14px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.add-button-search {
+    background-color: #006400;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: "Montserrat", sans-serif;
+}
+
+.add-button-search:hover {
+    background-color: #007400;
+    font-family: "Montserrat", sans-serif;
+}
+
+.dot-falling {
+    position: relative;
+    left: -9999px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #006400;
+    color: #006400;
+    box-shadow: 9999px 0 0 0 #006400;
+    animation: dot-falling 1s infinite linear;
+    animation-delay: 0.1s;
+    font-family: "Montserrat", sans-serif;
+}
+
+.dot-falling::before,
+.dot-falling::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+.dot-falling::before {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #006400;
+    color: #006400;
+    animation: dot-falling-before 1s infinite linear;
+    animation-delay: 0s;
+    font-family: "Montserrat", sans-serif;
+}
+
+.dot-falling::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #006400;
+    color: #006400;
+    animation: dot-falling-after 1s infinite linear;
+    animation-delay: 0.2s;
+    font-family: "Montserrat", sans-serif;
+}
+
+@keyframes dot-falling {
+    0% {
+        box-shadow: 9999px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+
+    25%,
+    50%,
+    75% {
+        box-shadow: 9999px 0 0 0 #006400;
+    }
+
+    100% {
+        box-shadow: 9999px 15px 0 0 rgba(152, 128, 255, 0);
+        font-family: "Montserrat", sans-serif;
+    }
+}
+
+@keyframes dot-falling-before {
+    0% {
+        box-shadow: 9984px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+
+    25%,
+    50%,
+    75% {
+        box-shadow: 9984px 0 0 0 #006400;
+    }
+
+    100% {
+        box-shadow: 9984px 15px 0 0 rgba(152, 128, 255, 0);
+        font-family: "Montserrat", sans-serif;
+    }
+}
+
+@keyframes dot-falling-after {
+    0% {
+        box-shadow: 10014px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+
+    25%,
+    50%,
+    75% {
+        box-shadow: 10014px 0 0 0 #006400;
+    }
+
+    100% {
+        box-shadow: 10014px 15px 0 0 rgba(152, 128, 255, 0);
+        font-family: "Montserrat", sans-serif;
+    }
+}

@@ -1,0 +1,62 @@
+[
+    {
+        "code": "7891079013038",
+        "name": "Cup Noodles Galinha Caipira - Nissin",
+        "salt": "2,16 g",
+        "sugars": "1,6 g",
+        "image_url": "https://images.openfoodfacts.org/images/products/789/107/901/3038/front_pt.4.full.jpg",
+        "allergens": [
+            ""
+        ]
+    },
+    {
+        "code": "7891000304556",
+        "name": "Nesfit Cacao & Cereais",
+        "salt": "7,3 g",
+        "sugars": "0,188 g",
+        "image_url": "https://images.openfoodfacts.org/images/products/789/100/030/4556/front_pt.10.full.jpg",
+        "allergens": [
+            ""
+        ]
+    },
+    {
+        "code": "7891962047560",
+        "name": "Biscoito Cereale - Bauducos",
+        "salt": "3 g",
+        "sugars": "14 g g",
+        "image_url": "https://images.openfoodfacts.org/images/products/789/196/204/7560/front_pt.12.full.jpg",
+        "allergens": [
+            ""
+        ]
+    },
+    {
+        "code": "7891103221576",
+        "name": "Atum Sólido Carrefour",
+        "salt": "0,5 g",
+        "sugars": "0,3 g",
+        "image_url": "",
+        "allergens": [
+            "Fish"
+        ]
+    },
+    {
+        "code": "7891098010476",
+        "name": "Chá Leão Erva Doce",
+        "salt": "0 g",
+        "sugars": "0 g",
+        "image_url": "https://images.openfoodfacts.org/images/products/789/109/801/0476/front_pt.3.full.jpg",
+        "allergens": [
+            ""
+        ]
+    },
+    {
+        "code": "7891167011755",
+        "name": "Atum Sólido Ao Natural Gomes Da Costa Lata",
+        "salt": "20 g",
+        "sugars": "0 g",
+        "image_url": "https://images.openfoodfacts.org/images/products/789/116/701/1755/front_pt.21.full.jpg",
+        "allergens": [
+            "Fish"
+        ]
+    }
+]

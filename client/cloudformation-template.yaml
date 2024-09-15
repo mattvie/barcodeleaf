@@ -1,0 +1,189 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Stack for S3 static website with CloudFront and Lambda@Edge'
+
+Conditions:
+  IsUsEast1: !Equals 
+    - !Ref AWS::Region
+    - us-east-1
+Parameters:
+  LambdaVersionParam:
+    Type: String
+    Default: "1.0.0"
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - edgelambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: LambdaEdgeExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - lambda:GetFunction
+                  - lambda:EnableReplication*
+                Resource: "*"
+  
+  RedirectFunction:
+    Type: AWS::Lambda::Function
+    Condition: IsUsEast1
+    Properties:
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            console.log("event:", event)
+            const request = event.Records[0].cf.request;
+            const uri = request.uri;
+            
+            const staticFileExtensions = ['.html', '.css', '.js', '.jpg', '.png', '.gif', '.svg'];
+            const isStaticFile = staticFileExtensions.some(ext => uri.endsWith(ext));
+            
+            if (!isStaticFile && uri !== '/index.html') {
+              request.uri = '/index.html';
+            }
+            
+            return request;
+          };
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Role: !GetAtt LambdaExecutionRole.Arn
+      MemorySize: 128
+      Timeout: 5
+
+  LambdaVersion:
+    Type: AWS::Lambda::Version
+    Condition: IsUsEast1
+    Properties:
+      FunctionName: !Ref RedirectFunction
+      Description: !Sub "v${LambdaVersionParam}"
+  
+  LambdaAlias:
+    Type: AWS::Lambda::Alias
+    Condition: IsUsEast1
+    Properties:
+      FunctionName: !Ref RedirectFunction
+      FunctionVersion: !GetAtt LambdaVersion.Version
+      Name: prod
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Condition: IsUsEast1
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RedirectFunction
+      Principal: edgelambda.amazonaws.com
+      SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}'
+
+  CloudFrontOriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Ref 'AWS::StackName'
+  
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-${AWS::AccountId}-bucket'
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+            Action: 's3:GetObject'
+            Resource: !Sub 'arn:aws:s3:::${S3Bucket}/*'
+
+  CloudFrontDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    DependsOn: 
+      - RedirectFunction
+      - LambdaVersion
+    Properties:
+      DistributionConfig:
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt S3Bucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
+        Enabled: true
+        DefaultCacheBehavior:
+          Compress: true
+          MinTTL: 0
+          DefaultTTL: 300
+          MaxTTL: 1200
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: 'redirect-to-https'
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
+          LambdaFunctionAssociations:
+            !If 
+              - IsUsEast1
+              - - EventType: origin-request
+                  LambdaFunctionARN: !Ref LambdaVersion
+              - []
+        CacheBehaviors:
+          - PathPattern: '*.map'
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: 'https-only'
+            MinTTL: 0
+            DefaultTTL: 300
+            MaxTTL: 1200
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+        DefaultRootObject: 'index.html'
+        PriceClass: 'PriceClass_100'
+
+Outputs:
+  DistributionId:
+    Description: "ID of the CloudFront distribution"
+    Value: !Ref CloudFrontDistribution
+  BucketName:
+    Value: !Ref S3Bucket
+    Export:
+      Name: BucketName
+  DistributionDomainName:
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: DistributionDomainName
+  LambdaFunctionArn: 
+    Condition: IsUsEast1
+    Value: !GetAtt RedirectFunction.Arn
+    Export:
+      Name: LambdaFunctionArn
+
